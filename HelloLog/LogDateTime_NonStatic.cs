@@ -107,9 +107,8 @@ namespace HelloLog
                 LogDT(" Date", DateTime.Now.ToString());
                 LogDT(" namespace", logbase.GetType().Namespace);//获取当前类名
                 LogDT(" class", logbase.GetType().Name);//获取当前类名\
-                String addr =  getMemory(obj);
 
-                LogDT(" addr", addr);
+                LogDT(" hashcode", string.Format("{0}",logbase.GetHashCode()));
                 FieldInfo[] infos = logbase.GetType().GetFields();//获取类中字段
 
 

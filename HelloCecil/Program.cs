@@ -30,9 +30,14 @@ namespace HelloCecil
 
         public void init()
         {
-           
 
-           
+            Console.WriteLine(DateTime.Now.ToString());
+
+        }
+
+        ~LogDateTime()
+        {
+            Console.WriteLine(" ~LogDateTime");
         }
     }
     
@@ -116,6 +121,7 @@ namespace HelloCecil
     {
         static void Main(string[] args)
         {
+
 
             String Path = "D:\\cyou-inc\\TestDevelopment\\menorychange\\Snake\\Snake\\snake_d\\assets\\bin\\Data\\Managed\\";
 
