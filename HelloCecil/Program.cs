@@ -30,14 +30,44 @@ namespace HelloCecil
 
         public void init()
         {
-            LogDateTime_NonStatic log = new LogDateTime_NonStatic();
+           
 
-            log.LogDT_Field(this);
+           
         }
     }
     
     public class Inject
     {
+
+
+        public static void  InjectIntoCtor(AssemblyDefinition assembiy, String class_name)
+        {
+            if (class_name.Equals(""))
+            {
+
+                return ;
+            }
+
+            var method = assembiy.MainModule
+             .Types.FirstOrDefault(t => t.Name == class_name)
+             .Methods.FirstOrDefault(m => m.Name == ".ctor");
+
+            var worker = method.Body.GetILProcessor(); //Get IL
+
+            var Constructor = assembiy.MainModule.ImportReference(typeof(Register).GetConstructor(new Type[] { }));//Create Instance
+            var ins = method.Body.Instructions[0];//Get First IL Step 
+
+
+            ins = method.Body.Instructions[method.Body.Instructions.Count - 1];//Get First IL Step 
+            worker.InsertBefore(ins, worker.Create(OpCodes.Newobj, Constructor));
+            worker.InsertBefore(ins, worker.Create(OpCodes.Ldarg_0));
+            worker.InsertBefore(ins, worker.Create(OpCodes.Call,
+                assembiy.MainModule.ImportReference(typeof(Register).GetMethod("RegisterUser"))));////Call Instance Method
+
+            return;
+
+
+        }
 
         public static bool InjectIntoCSharp(String srcpath,String dstpath)
         {
@@ -53,10 +83,17 @@ namespace HelloCecil
                 Console.WriteLine(string.Format("Class NameSpace :[{0}]", type.Namespace)); //命名空间
                 Console.WriteLine(string.Format("Class Name :[{0}]", type.Name)); //类名
 
+                if (!type.Name.Equals("<Module>"))
+                {
+                    InjectIntoCtor(assembiy, type.Name); //在构造函数中插码，
+                }
+
                 foreach (MethodDefinition meth in type.Methods) //遍历方法名称
                   {
-                    
-                        Console.WriteLine(string.Format(".maxstack {0}",meth.Body.MaxStackSize));
+
+                    Console.WriteLine(string.Format("Method Name ：[{0}]", meth.FullName));
+
+                    Console.WriteLine(string.Format(".maxstack {0}",meth.Body.MaxStackSize));
 
                         foreach (Instruction inst in meth.Body.Instructions)
                         {
@@ -67,23 +104,6 @@ namespace HelloCecil
                     }
                 
             }
-
-
-            var method = assembiy.MainModule
-              .Types.FirstOrDefault(t => t.Name == "MainUIController")
-              .Methods.FirstOrDefault(m => m.Name == ".ctor");
-
-            var worker = method.Body.GetILProcessor(); //Get IL
-
-            var Constructor = assembiy.MainModule.ImportReference(typeof(LogDateTime_NonStatic).GetConstructor(new Type[] { }));//Create Instance
-            var ins = method.Body.Instructions[0];//Get First IL Step 
-
-
-            ins = method.Body.Instructions[method.Body.Instructions.Count - 1];//Get First IL Step 
-            worker.InsertBefore(ins, worker.Create(OpCodes.Newobj, Constructor));
-            worker.InsertBefore(ins, worker.Create(OpCodes.Ldarg_0));
-            worker.InsertBefore(ins, worker.Create(OpCodes.Call,
-                assembiy.MainModule.ImportReference(typeof(LogDateTime_NonStatic).GetMethod("LogDT_Field"))));////Call Instance Method
 
            
             assembiy.Write(dstpath);
