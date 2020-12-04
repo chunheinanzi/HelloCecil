@@ -27,6 +27,11 @@ namespace ILInject
              .Types.FirstOrDefault(t => t.Name == class_name)
              .Methods.FirstOrDefault(m => m.Name == ".ctor");
 
+            if (method == null|| method.Body == null)
+            {
+                return;
+            }
+
             var worker = method.Body.GetILProcessor(); //Get IL
 
             var Constructor = assembiy.MainModule.ImportReference(typeof(Register).GetConstructor(new Type[] { }));//Create Instance
@@ -68,20 +73,24 @@ namespace ILInject
                     InjectIntoCtor(assembiy, type.Name); //在构造函数中插码，
                 }
 
-                foreach (MethodDefinition meth in type.Methods) //遍历方法名称
-                {
+                //foreach (MethodDefinition meth in type.Methods) //遍历方法名称
+                //{
+                //    try {
+                //        out_str += (string.Format("Method Name ：[{0}]\r\n", meth.FullName));
 
-                    out_str += (string.Format("Method Name ：[{0}]\r\n", meth.FullName));
+                //        out_str += (string.Format(".maxstack {0}\r\n", meth.Body.MaxStackSize));
 
-                    out_str += (string.Format(".maxstack {0}\r\n", meth.Body.MaxStackSize));
-
-                    foreach (Instruction inst in meth.Body.Instructions)
-                    {
-                        out_str += (string.Format("L_{0}: {1} {2}\r\n", inst.Offset.ToString("x4"),
-                        inst.OpCode.Name,
-                        inst.Operand is String ? String.Format("\"{0}\"", inst.Operand) : inst.Operand));
-                    }
-                }
+                //        foreach (Instruction inst in meth.Body.Instructions)
+                //        {
+                //            out_str += (string.Format("L_{0}: {1} {2}\r\n", inst.Offset.ToString("x4"),
+                //            inst.OpCode.Name,
+                //            inst.Operand is String ? String.Format("\"{0}\"", inst.Operand) : inst.Operand));
+                //        }
+                //    } catch {
+                        
+                //    }
+                    
+                //}
 
             }
 

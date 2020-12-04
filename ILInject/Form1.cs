@@ -43,6 +43,7 @@ namespace ILInject
                    
                     textBox_getpath.Tag = Path.GetDirectoryName(Name);
                     textBox_getpath.Text = Name;
+                    
 
 
 
@@ -54,8 +55,11 @@ namespace ILInject
         private void button_inject_Click(object sender, EventArgs e)
         {
             textBox1.Clear();
+
+            String name = Path.GetFileNameWithoutExtension(textBox_getpath.Text);
+
             string path = (string)textBox_getpath.Tag+"\\";
-            string ret = Inject.InjectIntoCSharp(path + "Assembly-CSharp.dll", path + "Assembly-CSharp_inject" +
+            string ret = Inject.InjectIntoCSharp(path + name+".dll", path + name+"_inject" +
                 ".dll");
             ret += "\r\nInject OK!";
             LogStr(ret);

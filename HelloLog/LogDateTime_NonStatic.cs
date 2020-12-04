@@ -63,6 +63,7 @@ namespace HelloLog
             Thread thread = new Thread(new ThreadStart(FieldDump));//创建线程
 
             thread.Start();
+           
         }
 
         public void LogDT(String tag, String data)
@@ -96,72 +97,78 @@ namespace HelloLog
 
         public void FieldDump()
         {
-            do { 
-            Thread.Sleep(10*1000);
+            do {
+                Debug.Log("LogDateTime_NonStatic " + "Thread Start");
+                Thread.Sleep(10*1000);
 
-            foreach (object obj in item_list_)
+
+                foreach (object obj in item_list_)
             {
 
                 object logbase = (object)obj;
 
-                LogDT(" Date", DateTime.Now.ToString());
-                LogDT(" namespace", logbase.GetType().Namespace);//获取当前类名
-                LogDT(" class", logbase.GetType().Name);//获取当前类名\
+                LogDT(" Class Info ", string.Format("Date[{0}],namespace[{1}],class[{2}],hashcode[{3}]",
+                     DateTime.Now.ToString(), 
+                     logbase.GetType().Namespace, 
+                     logbase.GetType().Name,
+                     logbase.GetHashCode()));
 
-                LogDT(" hashcode", string.Format("{0}",logbase.GetHashCode()));
-                FieldInfo[] infos = logbase.GetType().GetFields();//获取类共有中字段
+                    //try {
+                    //    FieldInfo[] infos = logbase.GetType().GetFields();//获取类共有中字段
+                    //    foreach (FieldInfo item in infos)//遍历类中字段并赋值
+                    //                                     //foreach (PropertyInfo item in properties)
+                    //    {
+                    //        string Fields = "public number：\n";
+                    //        string name = item.Name; //名称
+                    //        object value = item.GetValue(logbase);  //值
+                    //        Fields += string.Format("[Fields_name == {0}: {1} -- {2}],", name, value, value.GetType());
 
+                    //        //if (name.Equals("score"))
+                    //        //{
+                    //        //    item.SetValue(logbase, 900);
+                    //        //    Fields += "\n";
+                    //        //    Fields += string.Format("[new][Fields_name == [{0}:{1} -- {2}]\n",
+                    //        //        item.Name, item.GetValue(logbase), item.GetValue(logbase).GetType());
+                    //        //}
 
-                string Fields = "public number：\n";
-
-                foreach (FieldInfo item in infos)//遍历类中字段并赋值
-                                                 //foreach (PropertyInfo item in properties)
-                {
-                    string name = item.Name; //名称
-                    object value = item.GetValue(logbase);  //值
-                    Fields += string.Format("[Fields_name == {0}: {1} -- {2}],", name, value, value.GetType());
-
-                        if (name.Equals("score"))
-                        {
-                            item.SetValue(logbase, 900);
-                            Fields += "\n";
-                            Fields += string.Format("[new][Fields_name == [{0}:{1} -- {2}]\n",
-                                item.Name, item.GetValue(logbase), item.GetValue(logbase).GetType());
-                        }
-
-                        Fields += "\n=========================\n";
-
-                }
-                LogDT("Fields", Fields);
-
-                    //获取非共有成员
-
-                    BindingFlags flag = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static;
-
-                    infos = logbase.GetType().GetFields(flag);//获取类共有中字段
+                    //        //Fields += "\n=========================\n";
+                    //        // LogDT("Fields", Fields);
+                    //    }
 
 
-                    Fields = "non public number：\n";
+                    //    //获取非共有成员
 
-                    foreach (FieldInfo item in infos)//遍历类中字段并赋值
-                                                     //foreach (PropertyInfo item in properties)
-                    {
-                        string name = item.Name; //名称
-                        object value = item.GetValue(logbase);  //值
-                        Fields += string.Format("[Fields_name == {0}: {1} -- {2}],", name, value, value.GetType());
+                    //    BindingFlags flag = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static;
 
-                        if (name.Equals("score"))
-                        {
-                            item.SetValue(logbase, 900);
-                            Fields += "\n";
-                            Fields += string.Format("[new][Fields_name == [{0}:{1} -- {2}]\n",
-                                item.Name, item.GetValue(logbase), item.GetValue(logbase).GetType());
-                        }
+                    //    infos = logbase.GetType().GetFields(flag);//获取类共有中字段
 
-                        Fields += "\n=========================\n";
+                    //    foreach (FieldInfo item in infos)//遍历类中字段并赋值
+                    //                                     //foreach (PropertyInfo item in properties)
+                    //    {
+                    //        string Fields = "non public number：\n";
+                    //        string name = item.Name; //名称
+                    //        object value = item.GetValue(logbase);  //值
+                    //        Fields += string.Format("[Fields_name == {0}: {1} -- {2}],", name, value, value.GetType());
 
-                    }
-                    LogDT("Fields", Fields);
+                    //        //if (name.Equals("score"))
+                    //        //{
+                    //        //    item.SetValue(logbase, 900);
+                    //        //    Fields += "\n";
+                    //        //    Fields += string.Format("[new][Fields_name == [{0}:{1} -- {2}]\n",
+                    //        //        item.Name, item.GetValue(logbase), item.GetValue(logbase).GetType());
+                    //        //}
+
+                    //        //Fields += "\n=========================\n";
+                    //        // LogDT("Fields", Fields);
+
+                    //    }
+                    //} catch {
+
+                    //    LogDT("FieldDump err", string.Format("Date[{0}],namespace[{1}],class[{2}],hashcode[{3}]"));
+                    //}
+
+                    
+
                 }
             } while (true);
         }
