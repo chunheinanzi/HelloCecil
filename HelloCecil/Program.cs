@@ -8,21 +8,31 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using UnityEngine;
 using HelloLog;
+using System.Reflection;
 /*1.通过Cecil可以完成插码 done
- 2.自定义代码封装成DLL，与插码后程序放在一起执行  done
- 3.可以通过反射获取类中字段（public）并修改值 done
- 4.通过插码遍历所有类，并完成字段打印（使用Cecil）
-    4.1 遍历所有类
-    4.2 插码
- 5.使用Unity程序测试可行性
- */
- /*插码程序*/
- 
+2.自定义代码封装成DLL，与插码后程序放在一起执行  done
+3.可以通过反射获取类中字段（public）并修改值 done
+4.通过插码遍历所有类，并完成字段打印（使用Cecil）
+4.1 遍历所有类
+4.2 插码
+5.使用Unity程序测试可行性
+*/
+/*插码程序*/
+
 namespace HelloCecil
 
 {
     public class LogDateTime
     {
+
+        private int i;
+        public List<int> list = new List<int>();
+        public int abc = 10;
+        public string qwe = "qwe == LogOne : LogBase";
+        public static Int64 index;
+        protected static Int64 pro;
+        protected int wed = 10000;
+        private int def { get; set; }
         public static void LogDT()
         {
             Console.WriteLine(DateTime.Now.ToString());
@@ -88,6 +98,15 @@ namespace HelloCecil
                 Console.WriteLine(string.Format("Class NameSpace :[{0}]", type.Namespace)); //命名空间
                 Console.WriteLine(string.Format("Class Name :[{0}]", type.Name)); //类名
 
+               
+                foreach(FieldDefinition field in type.Fields)
+                {
+                    Console.WriteLine(string.Format("field Name ：[{0}]", field.FullName));
+                   
+                    //if (field.IsStatic && field.IsPrivate)
+                    //    continue;
+                    //field.IsPublic = true;
+                }
                 if (!type.Name.Equals("<Module>"))
                 {
                     InjectIntoCtor(assembiy, type.Name); //在构造函数中插码，
@@ -121,7 +140,6 @@ namespace HelloCecil
     {
         static void Main(string[] args)
         {
-
 
             String Path = "D:\\cyou-inc\\TestDevelopment\\menorychange\\Snake\\Snake\\snake_d\\assets\\bin\\Data\\Managed\\";
 

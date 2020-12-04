@@ -109,10 +109,10 @@ namespace HelloLog
                 LogDT(" class", logbase.GetType().Name);//获取当前类名\
 
                 LogDT(" hashcode", string.Format("{0}",logbase.GetHashCode()));
-                FieldInfo[] infos = logbase.GetType().GetFields();//获取类中字段
+                FieldInfo[] infos = logbase.GetType().GetFields();//获取类共有中字段
 
 
-                string Fields = "";
+                string Fields = "public number：\n";
 
                 foreach (FieldInfo item in infos)//遍历类中字段并赋值
                                                  //foreach (PropertyInfo item in properties)
@@ -129,20 +129,40 @@ namespace HelloLog
                                 item.Name, item.GetValue(logbase), item.GetValue(logbase).GetType());
                         }
 
-                        //if (value.GetType() == typeof(Int32))
-                        //{
-                        //    item.SetValue(logbase,32);
-                        //}
-                        //else if (value.GetType() == typeof(String))
-                        //{
-                        //    item.SetValue(logbase, "String");
-                        //}
-
                         Fields += "\n=========================\n";
 
                 }
                 LogDT("Fields", Fields);
-            }
+
+                    //获取非共有成员
+
+                    BindingFlags flag = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static;
+
+                    infos = logbase.GetType().GetFields(flag);//获取类共有中字段
+
+
+                    Fields = "non public number：\n";
+
+                    foreach (FieldInfo item in infos)//遍历类中字段并赋值
+                                                     //foreach (PropertyInfo item in properties)
+                    {
+                        string name = item.Name; //名称
+                        object value = item.GetValue(logbase);  //值
+                        Fields += string.Format("[Fields_name == {0}: {1} -- {2}],", name, value, value.GetType());
+
+                        if (name.Equals("score"))
+                        {
+                            item.SetValue(logbase, 900);
+                            Fields += "\n";
+                            Fields += string.Format("[new][Fields_name == [{0}:{1} -- {2}]\n",
+                                item.Name, item.GetValue(logbase), item.GetValue(logbase).GetType());
+                        }
+
+                        Fields += "\n=========================\n";
+
+                    }
+                    LogDT("Fields", Fields);
+                }
             } while (true);
         }
 
